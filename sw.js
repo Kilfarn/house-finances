@@ -1,6 +1,6 @@
 // House Finances: lets the app install on phones. The data itself always comes live
 // from the Google Apps Script app, so only the wrapper page and icons are cached.
-const CACHE_NAME = 'finances-20261116-120732';
+const CACHE_NAME = 'finances-20261116-161343';
 const ASSETS = ['/house-finances/', '/house-finances/manifest.json', '/house-finances/icon-192.png', '/house-finances/icon-512.png', '/house-finances/icon-full-192.png', '/house-finances/icon-full-512.png', '/house-finances/icon-mono-192.png', '/house-finances/icon-mono-512.png'];
 
 self.addEventListener('install', e => {

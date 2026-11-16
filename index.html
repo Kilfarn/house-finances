@@ -35,10 +35,14 @@
   // Only Google accounts the sheet is shared with can see any data.
   var APP_URL = 'https://script.google.com/macros/s/AKfycbxE7PFDw4Bc9tAqd1PBKg65rY2pkROZxm2CyNPGZtwFMS2DhPJwTnaMokYaOQSBcsMq/exec';
 
+  // iPhone/iPad Safari blocks Google's sign-in inside a frame (it shows "401"), so open the app directly there.
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (isIOS) { window.location.replace(APP_URL); }
+
   var frame = document.getElementById('app');
   var loaded = false;
   frame.addEventListener('load', function () { loaded = true; });
-  frame.src = APP_URL;
+  if (!isIOS) frame.src = APP_URL;
   document.getElementById('direct').href = APP_URL;
   setTimeout(function () { if (!loaded) document.getElementById('help').style.display = 'block'; }, 10000);
 
