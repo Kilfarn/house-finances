@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14532d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Finances">
+<title>House Finances</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  :root { --bg:#f6f5f1; --ink:#1c1b19; --muted:#6b6862; --brand:#14532d; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#121412; --ink:#ecebe7; --muted:#a3a29c; --brand:#6fcf8f; } }
+  html, body { margin:0; height:100%; background:var(--bg); color:var(--ink);
+    font:15px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  body { padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom); box-sizing:border-box; }
+  iframe { display:block; border:0; width:100%; height:100%; }
+  #help { position:fixed; inset:auto 16px calc(90px + env(safe-area-inset-bottom)) 16px; background:var(--ink); color:var(--bg);
+    border-radius:14px; padding:14px; display:none; font-size:14px; }
+  #help a { color:inherit; font-weight:600; }
+  #help button { float:right; border:0; background:none; color:inherit; font-size:18px; line-height:1; cursor:pointer; }
+</style>
+</head>
+<body>
+<iframe id="app" title="House Finances" allow="clipboard-write"></iframe>
+<div id="help">
+  <button aria-label="Close" onclick="this.parentNode.style.display='none'">×</button>
+  Not loading? Make sure you're signed in to Google in Chrome, then
+  <a id="direct" target="_blank" rel="noopener">open the app directly</a> once to approve it.
+</div>
+<script>
+  // The Google Apps Script web app that reads and writes the House Finances sheet.
+  // Only Google accounts the sheet is shared with can see any data.
+  var APP_URL = 'https://script.google.com/macros/s/AKfycbxE7PFDw4Bc9tAqd1PBKg65rY2pkROZxm2CyNPGZtwFMS2DhPJwTnaMokYaOQSBcsMq/exec';
+
+  var frame = document.getElementById('app');
+  var loaded = false;
+  frame.addEventListener('load', function () { loaded = true; });
+  frame.src = APP_URL;
+  document.getElementById('direct').href = APP_URL;
+  setTimeout(function () { if (!loaded) document.getElementById('help').style.display = 'block'; }, 10000);
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js', { scope: '/house-finances/' }).catch(function () {});
+  }
+</script>
+</body>
+</html>
