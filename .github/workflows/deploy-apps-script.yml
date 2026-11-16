@@ -3,7 +3,7 @@ name: Deploy app to Google Apps Script
 # Pushes apps-script/ to the House Finances Apps Script project and updates the
 # existing web app deployment, so the /exec link stays the same.
 # Needs: secret CLASPRC_JSON (from `npx @google/clasp@2.4.2 login`),
-#        repository variables SCRIPT_ID and DEPLOYMENT_ID.
+#        SCRIPT_ID and DEPLOYMENT_ID are below (a repository variable of the same name overrides them).
 
 on:
   push:
@@ -26,8 +26,8 @@ jobs:
       - name: Check setup
         env:
           CLASPRC: ${{ secrets.CLASPRC_JSON }}
-          SCRIPT_ID: ${{ vars.SCRIPT_ID }}
-          DEPLOYMENT_ID: ${{ vars.DEPLOYMENT_ID }}
+          SCRIPT_ID: ${{ vars.SCRIPT_ID || '1_Erc5ucm41noDX6C4XaQ99eL5tRiMHZ5VYrxlwMLwLLlJmJsK3G3HGeT' }}
+          DEPLOYMENT_ID: ${{ vars.DEPLOYMENT_ID || 'AKfycbxE7PFDw4Bc9tAqd1PBKg65rY2pkROZxm2CyNPGZtwFMS2DhPJwTnaMokYaOQSBcsMq' }}
         run: |
           missing=""
           [ -z "$CLASPRC" ] && missing="$missing secret CLASPRC_JSON,"
@@ -38,7 +38,7 @@ jobs:
       - name: Write clasp credentials and project file
         env:
           CLASPRC: ${{ secrets.CLASPRC_JSON }}
-          SCRIPT_ID: ${{ vars.SCRIPT_ID }}
+          SCRIPT_ID: ${{ vars.SCRIPT_ID || '1_Erc5ucm41noDX6C4XaQ99eL5tRiMHZ5VYrxlwMLwLLlJmJsK3G3HGeT' }}
         run: |
           printf '%s' "$CLASPRC" > ~/.clasprc.json
           printf '{"scriptId":"%s","rootDir":"apps-script"}' "$SCRIPT_ID" > .clasp.json
@@ -48,7 +48,7 @@ jobs:
 
       - name: Update the web app deployment
         env:
-          DEPLOYMENT_ID: ${{ vars.DEPLOYMENT_ID }}
+          DEPLOYMENT_ID: ${{ vars.DEPLOYMENT_ID || 'AKfycbxE7PFDw4Bc9tAqd1PBKg65rY2pkROZxm2CyNPGZtwFMS2DhPJwTnaMokYaOQSBcsMq' }}
         run: npx --yes @google/clasp@2.4.2 deploy --deploymentId "$DEPLOYMENT_ID" --description "GitHub ${GITHUB_SHA::7}"
 
       - name: Remove credentials
